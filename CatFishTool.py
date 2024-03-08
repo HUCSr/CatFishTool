@@ -231,13 +231,28 @@ def update_userDeck () :
 def select_card (cardID) :
     global selectCardID
     global select_card_label
+    global select_card_label_name
+    # ←→↑↓↙↘ 「」
+
+    with open(process_path("./lib/CardData.json"),'r',encoding = 'utf-8') as t:
+            CardData = json.load (t)
     
     if cardID >= 0 and cardID < 100:
         select_card_label.config(image=SystemCardlargephoto[cardID])
+        select_card_label_name .config(text=CardData["系统卡"][str(cardID)][1],
+                                    font=('宋体',15))
     elif cardID < 200:
         select_card_label.config(image=PowerCardlargephoto[CHARACTOR][cardID-100])
+        for i in CardData[CHARACTOR]["必杀"]:
+            if CardData[CHARACTOR]["必杀"][i][0] == cardID:
+                select_card_label_name.config(text=CardData[CHARACTOR]["必杀"][i][1],
+                                            font=('宋体',15))
     else:    
         select_card_label.config(image=SpellCardlargephoto[CHARACTOR][cardID-200])
+        for i in CardData[CHARACTOR]["符卡"]:
+            if CardData[CHARACTOR]["符卡"][i][0] == cardID:
+                select_card_label_name.config(text=CardData[CHARACTOR]["符卡"][i][1],
+                                            font=('宋体',15))
     
     selectCardID = cardID
     pass
@@ -355,16 +370,18 @@ def load_catfish_deck():
 
     with open ((fileloadpath),'rb') as f:
         byteval = bytearray(struct.unpack ("22s",f.read(22))[0])
+    
+    userDeck = []
+    
     if byteval[0] == charactorID[CHARACTOR]:
         for i in range (2,byteval[1] + 2) :
-            with open(process_path("./lib/CardData.json"),'r',encoding = 'utf-8') as t:
-                CardData = json.load (t)
+            
             if byteval[i] < 100:
-                userDeck.append (CardData["系统卡"][str(byteval[i])][0])
+                userDeck.append (byteval[i])
             elif byteval[i] < 200:
-                userDeck.append (CardData[CHARACTOR]["必杀"][str(byteval[i])][0])
+                userDeck.append (byteval[i])
             else:
-                userDeck.append (CardData[CHARACTOR]["符卡"][str(byteval[i])][0])
+                userDeck.append (byteval[i])
     else:
         for i in charactorID:
             if charactorID[i] == byteval[0]:
@@ -385,6 +402,7 @@ def change_deck (DeckName) :
     global selectCardID
     global err_label
     global select_card_label
+    global select_card_label_name
     global DECKNAME
     
     DECKNAME = DeckName
@@ -411,6 +429,10 @@ def change_deck (DeckName) :
     select_card_label = tk.Label(changedeck)
     select_card_label.place(x = 626,y = 18)
     
+    select_card_label_name = tk.Label(changedeck,
+                                      text="修改完卡组后记得\n按中间的按钮来保存卡组",
+                                      font=('宋体',15))
+    select_card_label_name.place(x = 732,y = 18)
     # 96 156
     
     
