@@ -334,6 +334,17 @@ def del_card() :
 
     update_userDeck()
     pass
+
+def del_all_card ():
+    global userDeck
+    global err_label
+    
+    userDeck = []
+    
+    err_label.config(text="")
+
+    update_userDeck()
+    pass
     
 def save_catfish_deck():
     filenewpath = asksaveasfilename(filetypes=[('cfd','cfd')])
@@ -435,7 +446,7 @@ def change_deck (charactor) :
     
     err_label = tk.Label(changedeck,text = "",
                          height=3,width=15,justify="center")
-    err_label.place(x = 485,y = 520)
+    err_label.place(x = 485,y = 50)
     
     
     select_card_label = tk.Label(changedeck)
@@ -576,6 +587,9 @@ def change_deck (charactor) :
     
     delCard = tk.Button(changedeck,text="<-移除",command = del_card)
     delCard.place(x = 476,y = 435,width=128,height=64)
+    
+    delCard = tk.Button(changedeck,text="<<-移除全部",command = del_all_card)
+    delCard.place(x = 476,y = 547,width=128,height=64)
   
     init_system_card(64,102)
     init_charactor_card(64,102)
